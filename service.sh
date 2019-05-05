@@ -1,6 +1,18 @@
-git clone https://github.com/shiincs/with-my-dog.git
+if test -e with-my-dog
+  then cd with-my-dog && git pull && cd ..
+fi
 
-git clone https://github.com/kyhsa93/withMyDog-api.git
+if [ ! -d with-my-dog ] ;
+  then git clone https://github.com/shiincs/with-my-dog.git
+fi
+
+if test -e withMyDog-api
+  then cd withMyDog-api && git pull && cd ..
+fi
+
+if [ ! -d withMyDog-api ] ;
+  then git clone https://github.com/kyhsa93/withMyDog-api.git
+fi
 
 echo "insert mysql password: "\\c
 read mysqlPassword
