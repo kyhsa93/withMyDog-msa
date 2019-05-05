@@ -1,0 +1,54 @@
+version: "2.0"
+services:
+  web-proxy:
+    image: nginx:alpine
+    volumes:
+      - ./web.nginx.conf:/etc/nginx/nginx.conf:ro
+    command: [nginx-debug, '-g', 'daemon off;']
+    restart: always
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    links:
+      - web
+
+  api-proxy:
+    image: nginx:alpine
+    volumes:
+      - ./api.nginx.conf:/etc/nginx/nginx.conf:ro
+    command: [nginx-debug, '-g', 'daemon off;']
+    restart: always
+    ports:
+      - "5000:80"
+    env_file:
+      - .env
+    links:
+      - api
+
+  web:
+    build: ./with-my-dog/
+    restart: always
+    env_file:
+      - .env
+    links:
+      - api
+
+  api:
+    build: ./withMyDog-api/
+    restart: always
+    env_file:
+      - .env
+    links:
+      - database
+
+  database:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=withmydog
+    volumes:
+      - ~/database/withmydog:/var/lib/mysql
